@@ -18,3 +18,10 @@
   font-weight: 700;
   font-style: normal;
 }
+
+body{
+  --webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-family: "Inter", sans-serif;
+  font-optical-sizing: auto;
+}
