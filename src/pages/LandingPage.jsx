@@ -49,11 +49,11 @@ const LandingPage = () => {
 
   return (
     <div
-      className='flex flex-col items-center gap-4 min-h-screen bg-gray-200 p-6'
+      className='flex flex-col items-center gap-4 min-h-screen bg-gray-100 p-6'
     >
       <input type="text" className='w-full max-w-lg h-10 border-none outline-none bg-white p-5 shadow-xl rounded' placeholder='search your product' onChange={handleSearch} value={productName} />
       <div
-        className='w-full bg-zinc-100 p-6 flex flex-col gap-6 rounded-lg shadow-lg'
+        className='w-full p-6 flex flex-col items-center justify-center gap-6'
       >
         {products.length === 0 && (
           <div className='flex items-center justify-center h-64'>
