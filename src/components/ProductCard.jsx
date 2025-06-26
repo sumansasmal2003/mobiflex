@@ -8,12 +8,12 @@ const ProductCard = ({ id, name, price, description, rating, image, link }) => {
 
   return (
     <div
-      className="flex flex-col md:flex-row gap-6 p-5 bg-white rounded-xl shadow-sm hover:shadow-md transition-all duration-300 border border-gray-100 max-w-7xl"
+      className="flex flex-col md:flex-row gap-6 p-5 bg-white rounded-xl shadow-sm hover:shadow-md transition-all duration-300 border border-gray-100 w-full max-w-7xl"
       key={id}
     >
       {/* Product Image */}
       <div
-        className="flex items-center justify-center cursor-pointer group bg-gray-50 shadow-lg rounded-lg"
+        className="flex items-center justify-center cursor-pointer group"
         onClick={() => navigate(`/product/${id}/${name}`)}
       >
         <img
@@ -53,7 +53,7 @@ const ProductCard = ({ id, name, price, description, rating, image, link }) => {
           </div>
 
           <button
-            className="flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white w-full max-w-[10rem] py-2.5 rounded-lg font-medium transition-colors duration-300 cursor-pointer"
+            className="flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white w-full md:max-w-[10rem] py-2.5 rounded-lg font-medium transition-colors duration-300 cursor-pointer"
             onClick={() => navigate(`/product/${id}/${name}`)}
           >
             <FaCartPlus className="text-lg" />
