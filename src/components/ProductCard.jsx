@@ -3,8 +3,9 @@ import { FaCartPlus } from 'react-icons/fa6';
 import { useNavigate } from 'react-router-dom';
 import flipkart from '../assets/flipkart.png';
 
-const ProductCard = ({ id, name, price, description, rating, image, link }) => {
+const ProductCard = ({ id, name, price, rating, image, link, details }) => {
   const navigate = useNavigate();
+  console.log(details)
 
   return (
     <div
@@ -32,9 +33,19 @@ const ProductCard = ({ id, name, price, description, rating, image, link }) => {
           {name}
         </h2>
 
-        <p className="text-gray-500 text-sm mb-4 line-clamp-3 hidden md:block">
-          {description}
-        </p>
+        {details && (
+          <div className="text-gray-600 text-sm mb-4">
+            <ul className="list-disc pl-5 space-y-1">
+              {details.map((detail, index) => (
+                <li key={index} className="text-gray-700">
+                  {detail}
+                </li>
+              ))}
+            </ul>
+            </div>
+            )}
+
+        {/* Price and Rating Section */}
 
         <div className="mt-auto">
           <div className="flex items-center justify-between mb-4">

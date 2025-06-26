@@ -65,12 +65,12 @@ const LandingPage = () => {
             id={product.id}
             name={product.name}
             price={product.price}
-            description={product.description}
             rating={product.rating}
             image={product.image}
             key={product.id}
             color={product.color}
             link={product.link}
+            details={product.highlights}
           />
         ))}
       </div>

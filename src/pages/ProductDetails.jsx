@@ -9,6 +9,7 @@ const ProductDetails = () => {
   const [showModal, setShowModal] = useState(false);
   const [paymentStatus, setPaymentStatus] = useState(null); // null, 'processing', 'success', 'error'
   const [products, setProducts] = useState([])
+  const [matchedProducts, setMatchedProducts] = useState([])
 
   const [formData, setFormData] = useState({
     cardNumber: '',
@@ -125,36 +126,56 @@ const ProductDetails = () => {
 
 
   useEffect(() => {
-    const fetchProducts = () => {
+    const productsRef = ref(database, 'products');
+    const unsubscribe = onValue(productsRef, (snapshot) => {
       try {
-        const productsRef = ref(database, 'products');
-        onValue(productsRef, (snapshot) => {
-                const data = snapshot.val();
-                if (data) {
-                  const productList = Object.keys(data).map(key => ({
-                    id: key,
-                    ...data[key]
-                  }));
-                  setProducts(productList);
-                  const foundProduct = products.find(item =>
-          item.id.toString() === productId
-        );
-        if (foundProduct) {
-          setProduct(foundProduct);
+        const data = snapshot.val();
+        if (data) {
+          const productList = Object.keys(data).map(key => ({
+            id: key,
+            ...data[key]
+          }));
+          setProducts(productList);
         } else {
-          throw new Error('Product not found');
+          console.log('No products found');
+          setProducts([]);
         }
-                } else {
-                  console.log('No products found in the database');
-                }
-              });
       } catch (err) {
-        console.log(err.message);
+        console.error(err.message);
       }
-    };
+    });
 
-    fetchProducts();
-  }, [productId, products]);
+    return () => unsubscribe();
+  }, []);
+
+  // Process products when products array or productId changes
+  useEffect(() => {
+    if (products.length === 0) return;
+
+    // Find current product
+    const currentProduct = products.find(item => item.id === productId);
+
+    if (currentProduct) {
+      setProduct(currentProduct);
+
+      // Extract base name by removing content within brackets
+      const baseName = currentProduct.name.replace(/\s*\([^)]*\)\s*/g, ' ').trim();
+
+      // Find matching products (excluding current product)
+      const matches = products.filter(product => {
+        if (product.id === currentProduct.id) return false;
+
+        // Compare using base name
+        const compareName = product.name.replace(/\s*\([^)]*\)\s*/g, ' ').trim();
+        return compareName === baseName;
+      });
+
+      setMatchedProducts(matches);
+    } else {
+      console.error('Product not found');
+      setProduct(null);
+    }
+  }, [products, productId]);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-200 p-4 md:p-8">
@@ -209,6 +230,21 @@ const ProductDetails = () => {
             </button>
           </div>
         </div>
+        {/* Related Products Section */}
+        {matchedProducts.length > 0 && (
+          <div className='flex flex-col items-center justify-center bg-white p-6 mt-4 rounded-2xl shadow-lg gap-3'>
+            <p className='text-xl text-zinc-800 font-semibold'>Product variant</p>
+            <div className='grid grid-cols-2 md:grid-cols-4 gap-3'>
+              {matchedProducts.map((item) => (
+                <div key={item.id} className="bg-white rounded-lg shadow-md p-4 hover:shadow-lg transition-shadow cursor-pointer" onClick={() => window.location.href = `/product/${item.id}/${item.name.replace(/\s+/g, '-').toLowerCase()}`}>
+                  <img src={item.image} alt={item.name} className="w-fit h-fit object-cover rounded-md mb-4" />
+                  <h3 className="text-xs md:text-lg font-semibold text-gray-800 mb-2">{item.name}</h3>
+                  <p className="text-gray-600 mb-2">₹{item.price}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
       </div>
       )}
       {/* Payment Modal */}
